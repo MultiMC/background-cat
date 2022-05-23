@@ -6,6 +6,8 @@ use std::{collections::HashSet, env};
 
 use serenity::{
     async_trait,
+    builder::{CreateActionRow, CreateButton},
+    client::Context,
     framework::standard::{
         help_commands, macros::help, Args, CommandGroup, CommandResult, HelpOptions,
         StandardFramework,
@@ -14,6 +16,7 @@ use serenity::{
         channel::Message,
         gateway::Ready,
         id::{ChannelId, UserId},
+        interactions::message_component::ButtonStyle,
     },
     prelude::*,
     utils::Colour,
@@ -115,7 +118,7 @@ impl EventHandler for Handler {
             debug!("Content of log: {}", log);
 
             let mistakes = common_mistakes(&log);
-            if ! mistakes.is_empty() {
+            if !mistakes.is_empty() {
                 send_reply(msg.channel_id, mistakes, ctx).await;
                 return;
             } else {
@@ -123,27 +126,84 @@ impl EventHandler for Handler {
             }
         };
 
-        for attachment in msg.attachments {
+        for attachment in &msg.attachments {
             let content = match attachment.download().await {
                 Ok(content) => content,
                 Err(_) => return,
             };
-            let content_type = attachment.content_type;
-            if content_type.is_some() && str::starts_with(&content_type.unwrap(), "text/plain") {
-                let log = String::from_utf8_lossy(&content).into_owned();
-                let mistakes = common_mistakes(&log);
-
-                if !mistakes.is_empty() {
-                    debug!("Mistakes found: {:?}", mistakes);
-                    send_reply(msg.channel_id, mistakes, ctx).await;
-                    return;
-                } else {
-                    info!(
-                        "Didn't find any mistakes in attachment ({})",
-                        attachment.filename
-                    );
+            if let Some(ctype) = &attachment.content_type {
+                if !ctype.to_ascii_lowercase().contains("charset=utf-8") {
+                    continue;
                 }
             }
+            let log = String::from_utf8_lossy(&content).into_owned();
+            let mistakes = common_mistakes(&log);
+            if !mistakes.is_empty() {
+                debug!("Mistakes found: {:?}", mistakes);
+                send_reply(msg.channel_id, mistakes, ctx).await;
+                return;
+            } else {
+                info!(
+                    "Didn't find any mistakes in attachment ({})",
+                    attachment.filename
+                );
+            }
+        }
+        lazy_static! {
+            static ref PASTE_URL: String = env::var("PASTEBIN_URL")
+                .unwrap_or_else(|_| "https://cdn.discordapp.com/attachments".to_string());
+        }
+        let mut rows: Vec<CreateActionRow> = Vec::new();
+        let mut row = CreateActionRow::default();
+        for attachment in &msg.attachments {
+            if let Some(ctype) = &attachment.content_type {
+                if !ctype.to_ascii_lowercase().contains("charset=utf-8") {
+                    continue;
+                }
+            }
+            let mut button = CreateButton::default();
+            button.style(ButtonStyle::Link);
+            button.label(format!("View {}", attachment.filename));
+            button.emoji('📜');
+            button.url(format!(
+                "{}/{}/{}/{}",
+                PASTE_URL.as_str(),
+                msg.channel_id,
+                attachment.id,
+                attachment.filename
+            ));
+            row.add_button(button);
+            if row.0.len() >= 5 {
+                rows.push(row.clone());
+                row = CreateActionRow::default()
+            }
+        }
+        // if the length of the current row isn't 0, add it to the list of rows
+        if !row.0.is_empty() {
+            rows.push(row)
+        }
+        if rows.is_empty() {
+            return;
+        }
+        if let Err(err) = msg
+            .channel_id
+            .send_message(&ctx, |m| {
+                m.content(format!(
+                    "Web version of attachments from <@{}>",
+                    msg.author.id
+                ))
+                .allowed_mentions(|am| am.empty_parse())
+                .components(|c| {
+                    for actionrow in rows {
+                        c.add_action_row(actionrow);
+                    }
+                    c
+                })
+                .reference_message(&msg)
+            })
+            .await
+        {
+            error!("Error sending message: {:?}", err)
         }
         return;
     }
@@ -161,7 +221,6 @@ impl EventHandler for Handler {
         .await;
     }
 }
-
 
 async fn send_reply(channel_id: ChannelId, mistakes: Vec<(&str, String)>, ctx: Context) {
     if let Err(why) = channel_id
@@ -182,8 +241,9 @@ async fn send_reply(channel_id: ChannelId, mistakes: Vec<(&str, String)>, ctx: C
             debug!("Embed: {:?}", m);
             m
         })
-        .await {
-            error!("Couldn't send message: {}", why)
-        }
+        .await
+    {
+        error!("Couldn't send message: {}", why)
+    }
     return;
 }
