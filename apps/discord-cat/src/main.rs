@@ -15,7 +15,7 @@ use serenity::{
     model::{
         channel::Message,
         gateway::Ready,
-        id::{ChannelId, UserId},
+        id::{ChannelId, GuildId, MessageId, UserId},
         interactions::message_component::ButtonStyle,
     },
     prelude::*,
@@ -149,9 +149,15 @@ impl EventHandler for Handler {
                 );
             }
         }
+
+        // TODO: delete on reaction
+
         lazy_static! {
-            static ref PASTE_URL: String = env::var("PASTEBIN_URL")
-                .unwrap_or_else(|_| "https://cdn.discordapp.com/attachments".to_string());
+            static ref PASTE_URL: String =
+                env::var("PASTEBIN_URL").unwrap_or_else(|_| "".to_string());
+        }
+        if PASTE_URL.as_str() == "" {
+            return;
         }
         let mut rows: Vec<CreateActionRow> = Vec::new();
         let mut row = CreateActionRow::default();
@@ -208,8 +214,6 @@ impl EventHandler for Handler {
         return;
     }
 
-    // TODO: delete on reaction
-
     async fn ready(&self, ctx: Context, ready: Ready) {
         use serenity::model::{gateway::Activity, user::OnlineStatus};
 
@@ -219,6 +223,31 @@ impl EventHandler for Handler {
             OnlineStatus::Online,
         )
         .await;
+    }
+
+    async fn message_delete(
+        &self,
+        ctx: Context,
+        channel_id: ChannelId,
+        message_id: MessageId,
+        _guild_id: Option<GuildId>,
+    ) {
+        if let Ok(messages) = channel_id
+            .messages(&ctx.http, |get| get.after(message_id).limit(10))
+            .await
+        {
+            for message in messages {
+                if message.is_own(&ctx.cache) {
+                    if let Some(ref referenced) = message.referenced_message {
+                        if referenced.id == message.id {
+                            if let Err(err) = message.delete(&ctx.http).await {
+                                error!("Failed to delete message: {:?}", err);
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 
