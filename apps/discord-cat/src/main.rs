@@ -274,5 +274,4 @@ async fn send_reply(channel_id: ChannelId, mistakes: Vec<(&str, String)>, ctx: C
     {
         error!("Couldn't send message: {}", why)
     }
-    return;
 }
