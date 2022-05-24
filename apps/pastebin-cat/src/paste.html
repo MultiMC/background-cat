@@ -1,0 +1,88 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link href="https://fonts.googleapis.com/css?family=JetBrains+Mono&display=swap" rel="preload" as="style" />
+    <link href="https://fonts.googleapis.com/css?family=JetBrains+Mono&display=swap" rel="stylesheet" />
+    <meta charset="UTF-8">
+    <meta name="robots" content="noindex">
+    <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Background Cat paste</title>
+    <style>
+        html {
+            background: #444;
+        }
+        .paste {
+            font-family: "JetBrains Mono", monospace;
+            margin-left: 1%;
+            margin-right: 1%;
+            color: #fff;
+            white-space: pre;
+        }
+        .options {
+            font-family: "JetBrains Mono", monospace;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body onload="onLoad()">
+    <div class="options" id="options">
+        Wrap lines <input type="checkbox" id="wrap" onclick="toggleWrap()">
+        Light mode <input type="checkbox" id="color" onclick="toggleColorMode()">
+    </div>
+    <pre class="paste" id="paste"><code>{{ paste }}</code></pre>
+</body>
+<script>
+    function toggleWrap() {
+        if (document.getElementById("wrap").checked === true) {
+            document.getElementById("paste").style.whiteSpace = "break-spaces";
+            localStorage.setItem("wrap", "yes");
+        }
+        else {
+            document.getElementById("paste").style.whiteSpace = "pre";
+            localStorage.setItem("wrap", "no");
+        }
+    }
+    function toggleColorMode() {
+        if (document.getElementById("color").checked === true) {
+            document.getElementById("paste").style.color = "#000";
+            document.getElementById("paste").style.backgroundColor = "#fff";
+            document.getElementById("options").style.color = "#000";
+            document.getElementById("options").style.backgroundColor = "#fff";
+            document.documentElement.style.color = "#000";
+            document.documentElement.style.backgroundColor = "#fff";
+            localStorage.setItem("color", "light");
+        }
+        else {
+            document.getElementById("paste").style.color = "#fff";
+            document.getElementById("paste").style.backgroundColor = "#444";
+            document.getElementById("options").style.color = "#fff";
+            document.getElementById("options").style.backgroundColor = "#444";
+            document.documentElement.style.color = "#fff";
+            document.documentElement.style.backgroundColor = "#444";
+            localStorage.setItem("color", "dark");
+        }
+    }
+    function onLoad() {
+        let wrap;
+        let color;
+        if (localStorage.getItem("wrap") === "yes") {
+            wrap = true
+        } else {
+            wrap = false
+        }
+        if (localStorage.getItem("color") === "light") {
+            color = true
+        } else {
+            color = false
+        }
+        document.getElementById("wrap").checked = wrap;
+        document.getElementById("color").checked = color;
+        toggleColorMode();
+        toggleWrap();
+    }
+</script>
+
+</html>

@@ -2,6 +2,7 @@
 members = [
     "apps/cli-cat",
     "apps/discord-cat",
+    "apps/pastebin-cat",
     "libs/background-cat",
 ]
 
