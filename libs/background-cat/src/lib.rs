@@ -132,11 +132,13 @@ fn one_seventeen_plus_java_too_old(log: &str) -> Option<(&str, String)> {
     const UNSUPPORTED_CLASS_VERSION_ERROR: &str = "java.lang.UnsupportedClassVersionError: net/minecraft/client/main/Main";
     const FABRIC_JAVA_VERSION_ERROR: &str = "fabric requires {java @ [>=16]}";
     const FABRIC_JAVA_VERSION_ERROR_SEVENTEEN: &str = "fabric requires {java @ [>=17]}";
+    const JAVA_16_WARNING: &str = "Minecraft 21w19a and above require the use of Java 16";
     const JAVA_17_WARNING: &str = "Minecraft 1.18 Pre Release 2 and above require the use of Java 17";
 
     if log.contains(UNSUPPORTED_CLASS_VERSION_ERROR)
         || log.contains(FABRIC_JAVA_VERSION_ERROR)
         || log.contains(FABRIC_JAVA_VERSION_ERROR_SEVENTEEN)
+        || log.contains(JAVA_16_WARNING)
         || log.contains(JAVA_17_WARNING)
     {
         Some(("‼", RESPONSES.get("use-java-17")?.to_string()))
