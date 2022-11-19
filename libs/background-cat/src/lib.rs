@@ -12,7 +12,7 @@ pub fn common_mistakes(input: &str) -> Vec<(&str, String)> {
 
 pub(crate) type Check = fn(&str) -> Option<(&str, String)>;
 
-pub(crate) const PARSERS: [Check; 15] = [
+pub(crate) const PARSERS: [Check; 16] = [
     multimc_in_program_files,
     macos_too_new_java,
     multimc_in_onedrive_managed_folder,
@@ -30,6 +30,7 @@ pub(crate) const PARSERS: [Check; 15] = [
     using_system_glfw,
     using_system_openal,
     //old_multimc_version,
+    reboot_required,
 ];
 
 fn multimc_in_program_files(log: &str) -> Option<(&str, String)> {
@@ -247,6 +248,15 @@ fn old_multimc_version(log: &str) -> Option<(&str, String)> {
 }
 */
 
+fn reboot_required(log: &str) -> Option<(&str, String)> {
+    const TRIGGER: &str = "Couldn't extract native jar";
+    if log.contains(TRIGGER) {
+        Some(("‼", RESPONSES.get("reboot-required")?.to_string()))
+    } else {
+        None
+    }
+}
+
 pub fn common_origins(input: &str) -> Vec<(&str, String)> {
     ORIGINS.iter().flat_map(|m| m(input)).collect()
 }
@@ -288,8 +298,9 @@ fn pirated_build(log: &str) -> Option<(&str, String)> {
 fn forked_build(log: &str) -> Option<(&str, String)> {
     const POLYMC_BUILD: &str = "PolyMC version: ";
     const MANYMC_BUILD: &str = "ManyMC version: ";
+    const PRISM_BUILD: &str = "Prism Launcher version: ";
 
-    if log.contains(POLYMC_BUILD) || log.contains(MANYMC_BUILD) {
+    if log.contains(POLYMC_BUILD) || log.contains(MANYMC_BUILD) || log.contains(PRISM_BUILD) {
         Some(("‼", RESPONSES.get("forked-build")?.to_string()))
     } else {
         None

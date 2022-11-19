@@ -121,6 +121,12 @@ lazy_static! {
             indoc! {
                 "You seem to be using your systems GLFW installation. This can cause the instance to crash if not properly setup. In case of a crash, make sure this isn't the cause of it."
             }
+        ),
+        (
+            "reboot-required",
+            indoc! {
+                "Another process appears to be locking your native library JARs. To solve this, please reboot your computer."
+            }
         )
     ]);
 }

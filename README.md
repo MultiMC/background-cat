@@ -9,12 +9,13 @@ I made this bot because it was brought to my attention that other discords also 
 
 - Build the code: `cargo build --bin discord-cat`
 - Copy `.env.example` to `target/debug/`
-- Customize `target/debug/.env` and include your Discord token in it, like this:
+- Customize `target/debug/.env` and include your Discord and paste.ee tokens in it, like this:
    ```
    # See https://docs.rs/env_logger
    RUST_LOG=error
 
    DISCORD_TOKEN=AAa0AAa0AAAaAaa...
+   PASTE_EE_TOKEN=aaAAaAa0AaAA0...
    BACKGROUND_CAT_PREFIX=-
    ```
 - Run the bot: `cargo run -p discord-cat`
@@ -22,12 +23,13 @@ I made this bot because it was brought to my attention that other discords also 
 ## Running in production
 
 - Copy `.env.example` to `.env`
-- Customize `.env` and include your Discord token in it, like this:
+- Customize `.env` and include your Discord and paste.ee tokens in it, like this:
    ```
    # See https://docs.rs/env_logger
    RUST_LOG=error
 
    DISCORD_TOKEN=AAa0AAa0AAAaAaa...
+   PASTE_EE_TOKEN=aaAAaAa0AaAA0...
    BACKGROUND_CAT_PREFIX=-
    ```
 
