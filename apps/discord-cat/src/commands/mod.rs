@@ -118,6 +118,8 @@ static_image_command! {
         "Please upload your log:";
     select_java "sjava", "https://cdn.discordapp.com/attachments/531598137790562305/575378380573114378/unknown.png",
         "Please select your Java version in the MultiMC settings:";
+    select_instance_java "sjava_instance" "sjava_inst", "https://cdn.discordapp.com/attachments/914690317033300018/1061023380779831326/image.png",
+        "Please select the correct Java version in your instance's settings";
     select_memory "smemory" "sram", "https://cdn.discordapp.com/attachments/531598137790562305/575376840173027330/unknown.png",
         "Please set your instance memory allocation:";
     install_forge "iforge", "https://cdn.discordapp.com/attachments/531598137790562305/575385471207866388/Install_Forge_in_MultiMC.gif",
