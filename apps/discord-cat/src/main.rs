@@ -98,7 +98,7 @@ impl EventHandler for Handler {
         }
 
         lazy_static! {
-            static ref PASTEE_REGEX: Regex = Regex::new(r"https:/{2}paste.ee/p/[^\s/]+").unwrap();
+            static ref PASTEE_REGEX: Regex = Regex::new(r"https:/{2}(?:api\.)?paste\.ee/p/[^\s/]+").unwrap();
         }
 
         if let Some(link) = PASTEE_REGEX.find(&msg.content) {
