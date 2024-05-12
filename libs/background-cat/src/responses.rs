@@ -27,7 +27,7 @@ lazy_static! {
             "out-of-memory",
             indoc! {
                 "You've run out of memory. You should allocate more, although the exact value depends on how many mods you have installed. \
-                [Click this link for a guide.](https://cdn.discordapp.com/attachments/531598137790562305/575376840173027330/unknown.png)"
+                [Click this link for a guide.](https://raw.githubusercontent.com/MultiMC/background-cat/master/apps/discord-cat/src/images/set_ram.png)"
             }
         ),
         (
