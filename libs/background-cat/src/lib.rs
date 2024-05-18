@@ -127,7 +127,10 @@ fn one_seventeen_plus_java_too_old(log: &str) -> Option<(&str, String)> {
 
 fn two_one_plus_java_too_old(log: &str) -> Option<(&str, String)> {
     const JAVA_CHECK_CLASS_FILE_VERSION: &str = "(class file version 65.0)";
-    if log.contains(JAVA_CHECK_CLASS_FILE_VERSION) {
+    const JAVA_CHECK_CLASS_FILE_VERSION_MMC: &str = "Minecraft 24w14a and above require the use of Java 21";
+    if log.contains(JAVA_CHECK_CLASS_FILE_VERSION)
+        || log.contains(JAVA_CHECK_CLASS_FILE_VERSION_MMC)
+    {
         Some(("‼", RESPONSES.get("use-java-21")?.to_string()))
     } else {
         None
