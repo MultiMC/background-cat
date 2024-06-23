@@ -124,6 +124,10 @@ static_image_command! {
         "How to install Forge:";
     javaarg "javaargs" "jarg" "jargs",
         "https://raw.githubusercontent.com/MultiMC/background-cat/master/apps/discord-cat/src/images/jvm_args.png";
+    select_java_instance "instjava",
+        "https://raw.githubusercontent.com/MultiMC/background-cat/master/apps/discord-cat/src/images/java-instance-select.jpg",
+        "Please select the right java for your current instance:";
+
 }
 
 #[group]
