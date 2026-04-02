@@ -113,6 +113,14 @@ static_text_command! {
         \n\
         Even if your pack fulfills those, it's good to have somewhat of an idea on how to approach \
         modpack creating. This also goes for modifying existing packs.";
+    add_new_account "addaccount" "account",
+        "How to add a new account:",
+        "1. Click on **Accounts** in the upper right corner.\n\
+        2. Click on **Manage Accounts**.\n\
+        3. Click on **Add New Account**.\n\
+        4. Click on **Copy Link**.\n\
+        5. Open your web browser and paste the URL into the address bar.\n\
+        6. Follow the steps to link MultiMC to your account.";
 }
 
 // Format: Name (Optional Alias1 Alias2...) , Image Link (, Optional Message) ;
