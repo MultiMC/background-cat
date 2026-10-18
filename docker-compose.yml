@@ -2,6 +2,7 @@ version: "3.9"
 
 services:
   discord-cat:
+    restart: unless-stopped
     build: .
     command: ./discord-cat
     volumes:

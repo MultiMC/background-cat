@@ -9,7 +9,7 @@ COPY ./libs ./libs
 RUN cargo build --release --bin discord-cat
 
 # Deploy to a slim image
-FROM debian:11-slim
+FROM debian:12-slim
 
 RUN apt-get update
 RUN apt-get install ca-certificates -y
